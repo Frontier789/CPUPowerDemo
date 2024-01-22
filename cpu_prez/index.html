@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	<style>
+		.graph_img {
+			filter: invert(.9);
+		}
+
+		.side_by_side {
+			float: left;
+		}
+
+		.matrix {
+			width: 245pt;
+		}
+
+		.matrix td {
+			border-bottom: 0px !important;
+			float: left;
+			padding: 0.0em 0.3em 0.0em 0.3em !important;
+			table-layout: fixed !important;
+			width: 15pt;
+			text-align: center !important;
+		}
+
+		.reveal pre code {
+			max-height: 100%;
+		}
+
+		.p_img {
+			width: 50%;
+		}
+		
+		.plot_img {
+			width: 50%;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<p>Just how strong are CPUs?</p>
+			</section>
+			<section>
+				<h3>The shortcut problem</h3>
+				<section>
+					<img src="images/sg.svg" class="graph_img">
+				</section>
+				<section>
+					<p>e -> c -> d: 9</p>
+					<img src="images/sg1.svg" class="graph_img">
+				</section>
+				<section>
+					<p>e -> f -> d: 6</p>
+					<img src="images/sg2.svg" class="graph_img">
+				</section>
+				<section>
+					<img src="images/sg.svg" class="graph_img side_by_side">
+					<table class="matrix">
+						<tr>
+							<td>.</td>
+							<td>a</td>
+							<td>b</td>
+							<td>c</td>
+							<td>d</td>
+							<td>e</td>
+							<td>f</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>-</td>
+							<td>1</td>
+							<td>1</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+						<tr>
+							<td>b</td>
+							<td>2</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+						<tr>
+							<td>c</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>1</td>
+							<td>1</td>
+							<td>-</td>
+						</tr>
+						<tr>
+							<td>d</td>
+							<td>1</td>
+							<td>-</td>
+							<td>3</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+						<tr>
+							<td>e</td>
+							<td>-</td>
+							<td>-</td>
+							<td>8</td>
+							<td>-</td>
+							<td>-</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							<td>f</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>4</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					</table>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2>The solution</h2>
+				</section>
+				<section>
+					<div>
+						\[\begin{aligned}
+						S_{ij} = \min_{k=0..N}(A_{ik} + A_{kj})
+						\end{aligned} \]
+					</div>
+					<div>
+						<p class="fragment">Rules:</p>
+						<ul>
+							<li class="fragment">Do not change the algorithm</li>
+							<li class="fragment">Exact same FP output</li>
+							<li class="fragment">Use all CPU resources</li>
+							<li class="fragment">No GPU</li>
+						</ul>
+					</div>
+				</section>
+				<section>
+					<h2>Baseline code</h2>
+					<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|2-3,7|9-13|16|1-110000"><script type="text/template">
+							void shortcut_0(size_t N, const float *A, float *S) {
+								for (size_t i = 0; i < N; ++i)
+								for (size_t j = 0; j < N; ++j)
+								{
+									float minimum = inf;
+						
+									for (size_t k = 0; k < N; ++k)
+									{
+										const auto x = A[i * N + k];
+										const auto y = A[k * N + j];
+										const auto z = x + y;
+						
+										minimum = std::min(z, minimum);
+									}
+						
+									S[i * N + j] = minimum;
+								}
+							}
+						</script></code></pre>
+					<!-- <pre><code data-trim data-noescape data-line-numbers="1,3-4|3-5" data-ln-start-from="7"><script type="text/template">
+							void shortcut(size_t N, const float *A, float *S) {
+								
+							}
+						</script></code></pre> -->
+				</section>
+				<section>
+					<pre><code data-trim data-noescape><script type="text/template">
+							$ clang++ shortcut.cpp && ./a.out
+						</script></code></pre>
+					<div class="fragment">
+						<p>N = 400</p>
+						<p>Runtime: 350ms</p>
+					</div>
+					<p class="fragment">Is that fast?</p>
+				</section>
+			</section>
+			<section>
+				<h2>Flips and Flops</h2>
+				<section>
+					<p>How do we measure performance?</p>
+					<p class="fragment">FLOPS = <u>F</u>loating point <u>O</u>perations <u>P</u>er <u>S</u>econd</p>
+					<p class="fragment">GFLOPS = <u>G</u>iga <u>F</u>loating point <u>O</u>perations <u>P</u>er
+						<u>S</u>econd
+					</p>
+					<p class="fragment">GFLOPS = 10<sup>9</sup> FLOPS</p>
+				</section>
+				<section>
+					<p>What can my lil' Ryzen 9 5950x do?</p>
+					<span class="fragment">(16 cores)</span>
+					<span class="fragment">x (3.4GHz)</span>
+					<span class="fragment">x (2 FPU / core)</span>
+					<span class="fragment">x (8 FLOP / FPU)</span>
+					<div class="fragment">= 870 GFLOPS</div>
+					<p class="fragment">How many operations did we do?</p>
+					<span class="fragment">FLOPs = 2 x N<sup>3</sup></span>
+					<span class="fragment"> = 0.12 GFLOPs</span>
+					<span class="fragment"> in 350ms</span>
+					<div class="fragment">= 0.36 GFLOPS</div>
+				</section>
+			</section>
+			<section>
+				<h2>Time to Optimize</h2>
+				<section>
+					<pre><code data-trim data-noescape><script type="text/template">
+							$ clang++ -O3 shortcut.cpp && ./a.out
+						</script></code></pre>
+					<span class="fragment"> N = 400 -> 30ms</span>
+					<span class="fragment"> -> 4.2 GFLOPS</span>
+					<div class="fragment"> An <u>11x</u> speedup</div>
+					<div class="fragment"> And yet we're only using 0.5% of the potential</div>
+				</section>
+			</section>
+			<section>
+				<h2>Parallel code</h2>
+				<section>
+					<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|2,18|1-110000"><script type="text/template">
+					void shortcut_1(size_t N, const float *A, float *S) {
+						parallelFor(N, [&](size_t i) {
+							for (size_t j = 0; j < N; ++j)
+							{
+								float minimum = inf;
+						
+								for (size_t k = 0; k < N; ++k)
+								{
+									const auto x = A[i * N + k];
+									const auto y = A[k * N + j];
+									const auto z = x + y;
+						
+									minimum = std::min(z, minimum);
+								}
+						
+								S[i * N + j] = minimum;
+							}
+						}
+					}
+					  </script></code></pre>
+				</section>
+				<section>
+					<span> N = 400</span>
+					<span class="fragment"> -> 26 GFLOPS</span>
+					<p class="fragment"> A <u>6x</u> speedup</p>
+					<span class="fragment"> Why not 16x?</span>
+					<div class="fragment"> N = 9500 -> 12 GFLOPS</div>
+					<div class="fragment"> Reading data is slow</div>
+				</section>
+			</section>
+			<section>
+				<h2>Access pattern</h2>
+				<section class="none" data-transition="none">
+					<img src="images/p0.png" class="p_img">
+				</section>
+				<section class="none" data-transition="none">
+					<img src="images/p1.png" class="p_img">
+				</section>
+				<section class="none" data-transition="none">
+					<img src="images/p2.png" class="p_img">
+				</section>
+				<section class="none" data-transition="none">
+					<img src="images/p3.png" class="p_img">
+				</section>
+				<section class="none" data-transition="none">
+					<img src="images/p4.png" class="p_img">
+				</section>
+				<section>
+					<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="10"><script type="text/template">
+				void shortcut_1(size_t N, const float *A, float *S) {
+					parallelFor(N, [&](size_t i) {
+						for (size_t j = 0; j < N; ++j)
+						{
+							float minimum = inf;
+					
+							for (size_t k = 0; k < N; ++k)
+							{
+								const auto x = A[i * N + k];
+								const auto y = A[k * N + j];
+								const auto z = x + y;
+					
+								minimum = std::min(z, minimum);
+							}
+					
+							S[i * N + j] = minimum;
+						}
+					}
+				}
+				  </script></code></pre>
+				</section>
+			</section>
+			<section>
+				<h2>Better access pattern</h2>
+				<section>
+					<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000"><script type="text/template">
+				std::vector<float> transposed(size_t N, const float *A) {
+					std::vector<float> mat(N*N);
+					
+					parallelFor(N, [&](size_t i) {
+						for (size_t j = 0; j < N; ++j)
+						{
+							mat[i * N + j] = A[j * N + i];
+						}
+					}
+					
+					return mat;
+				}
+				  </script></code></pre>
+				</section>
+				<section>
+					<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|2,11"><script type="text/template">
+				void shortcut_1(size_t N, const float *A, float *S) {
+					const auto T = transposed(N, A);
+					parallelFor(N, [&](size_t i) {
+						for (size_t j = 0; j < N; ++j)
+						{
+							float minimum = inf;
+					
+							for (size_t k = 0; k < N; ++k)
+							{
+								const auto x = A[i * N + k];
+								const auto y = T[j * N + k];
+								const auto z = x + y;
+					
+								minimum = std::min(z, minimum);
+							}
+					
+							S[i * N + j] = minimum;
+						}
+					}
+				}
+				  </script></code></pre>
+				</section>
+				<section>
+					<div>
+						<span> N = 9500</span>
+						<span class="fragment"> -> 31 GFLOPS</span>
+					</div>
+					<img src="images/v012_plot.png" class="fragment plot_img">
+				</section>
+			</section>
+		</div>
+	</div>
+
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script src="plugin/math/math.js"></script>
+	<script>
+		Reveal.initialize({
+			hash: true,
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+		});
+	</script>
+</body>
+
+</html>
