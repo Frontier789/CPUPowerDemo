@@ -42,7 +42,7 @@
 		.p_img {
 			width: 50%;
 		}
-		
+
 		.plot_img {
 			width: 50%;
 		}
@@ -327,7 +327,7 @@
 				</section>
 				<section>
 					<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|2,11"><script type="text/template">
-				void shortcut_1(size_t N, const float *A, float *S) {
+				void shortcut_2(size_t N, const float *A, float *S) {
 					const auto T = transposed(N, A);
 					parallelFor(N, [&](size_t i) {
 						for (size_t j = 0; j < N; ++j)
@@ -356,6 +356,10 @@
 					</div>
 					<img src="images/v012_plot.png" class="fragment plot_img">
 				</section>
+			</section>
+			<section>
+				<h2>Instruction level parallelism</h2>
+
 			</section>
 		</div>
 	</div>
