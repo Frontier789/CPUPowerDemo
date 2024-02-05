@@ -235,13 +235,27 @@
 				</section>
 				<section>
 					<p>What can my lil' Ryzen 9 5950x do?</p>
-					<span class="fragment">(16 cores)</span>
-					<span class="fragment">x (3.4GHz)</span>
-					<span class="fragment">x (2 FPU / core)</span>
-					<span class="fragment">x (8 FLOP / FPU)</span>
-					<div class="fragment">= 870 GFLOPS</div>
+					<div class="r-stack">
+						<img src="images/cpu0.png" class="fragment img_25" data-fragment-index="1">
+						<img src="images/cpu1.png" class="fragment img_25" data-fragment-index="2">
+						<img src="images/cpu2.png" class="fragment img_25" data-fragment-index="4">
+						<img src="images/cpu3.png" class="fragment img_25" data-fragment-index="6">
+						<img src="images/simd_latency_on_zen3.png" class="fragment img_25" data-fragment-index="8">
+						<img src="images/simd_latency_on_zen3_hl.png" class="fragment img_25" data-fragment-index="9">
+					</div>
+
+					<div><small>
+							<span class="fragment" data-fragment-index="3">(16 cores)</span>
+							<span class="fragment" data-fragment-index="5">x (3.4GHz)</span>
+							<span class="fragment" data-fragment-index="7">x (8 FOPs)</span>
+							<span class="fragment" data-fragment-index="9">x (2 OPS)</span> <br>
+							<span class="fragment" data-fragment-index="10"> = 870 GFLOPS</span>
+						</small></div>
+				</section>
+				<section>
+					<span>870 GFLOPS</span>
 					<p class="fragment">How many operations did we do?</p>
-					<span class="fragment">FLOPs = 2 x N<sup>3</sup></span>
+					<span class="fragment">FLOPs = 2 x 400<sup>3</sup></span>
 					<span class="fragment"> = 0.12 GFLOPs</span>
 					<span class="fragment"> in 350ms</span>
 					<div class="fragment">= 0.36 GFLOPS</div>
@@ -299,20 +313,14 @@
 			</section>
 			<section>
 				<h2>Access pattern</h2>
-				<section class="none" data-transition="none">
-					<img src="images/p0.png" class="img_25">
-				</section>
-				<section class="none" data-transition="none">
-					<img src="images/p1.png" class="img_25">
-				</section>
-				<section class="none" data-transition="none">
-					<img src="images/p2.png" class="img_25">
-				</section>
-				<section class="none" data-transition="none">
-					<img src="images/p3.png" class="img_25">
-				</section>
-				<section class="none" data-transition="none">
-					<img src="images/p4.png" class="img_25">
+				<section>
+					<div class="r-stack">
+						<img src="images/p0.png" class="fragment img_25">
+						<img src="images/p1.png" class="fragment img_25">
+						<img src="images/p2.png" class="fragment img_25">
+						<img src="images/p3.png" class="fragment img_25">
+						<img src="images/p4.png" class="fragment img_25">
+					</div>
 				</section>
 				<section>
 					<small>
@@ -339,9 +347,6 @@
 				  </script></code></pre>
 					</small>
 				</section>
-			</section>
-			<section>
-				<h2>Better access pattern</h2>
 				<section>
 					<small>
 						<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000"><script type="text/template">
@@ -461,6 +466,187 @@
 						<div>Is it fast?</div>
 						<img src="images/v0123_plot.png" class="fragment img_40">
 						<div class="fragment">90 GFLOPS (3x speedup)</div>
+					</small>
+				</section>
+			</section>
+			<section>
+				<h2>SIMD</h2>
+				<section>
+					<h3>Single Instruction Multiple Data</h3>
+				</section>
+				<section>
+					<table>
+						<tr>
+							<td>
+								f<sub>0</sub>
+							</td>
+							<td>
+								+
+							</td>
+							<td>
+								g<sub>0</sub>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								f<sub>1</sub>
+							</td>
+							<td>
+								+
+							</td>
+							<td>
+								g<sub>1</sub>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								f<sub>2</sub>
+							</td>
+							<td>
+								+
+							</td>
+							<td>
+								g<sub>2</sub>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								f<sub>3</sub>
+							</td>
+							<td>
+								+
+							</td>
+							<td>
+								g<sub>3</sub>
+							</td>
+						</tr>
+						<tr>
+							<td>...</td>
+						</tr>
+					</table>
+				</section>
+				<section>
+					<p>Advanced Vector eXtensions</p>
+					<table>
+						<tr>
+							<td>
+								f<sub>0123</sub>
+							</td>
+							<td>
+								+
+							</td>
+							<td>
+								g<sub>0123</sub>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								f<sub>4567</sub>
+							</td>
+							<td>
+								+
+							</td>
+							<td>
+								g<sub>4567</sub>
+							</td>
+						</tr>
+						<tr>
+							<td>...</td>
+						</tr>
+					</table>
+				</section>
+				<section>
+					<p>AVX Caveats</p>
+					<ul>
+						<li class="fragment">Compiler support</li>
+						<li class="fragment">Platform specific</li>
+						<li class="fragment">Alignment</li>
+					</ul>
+				</section>
+				<section>
+					<h3>AVX-256</h3>
+					<small>
+						<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|3|5|7-15|17-20|22-25"><script type="text/template">
+							#include <cstdint> // uintptr_t
+							
+							typedef float float8_t __attribute__((vector_size(8 * sizeof(float))));
+							
+							constexpr float8_t inf8{inf, inf, inf, inf, inf, inf, inf, inf};
+							
+							inline float hmin8(float8_t values)
+							{
+								float v = inf;
+								for (int i = 0; i < 8; ++i)
+								{
+									v = std::min(values[i], v);
+								}
+								return v;
+							}
+							
+							inline float8_t min8(float8_t x, float8_t y)
+							{
+								return x < y ? x : y;
+							}
+							
+							bool is_float8_aligned(const float *ptr) {
+								auto intptr = reinterpret_cast<uintptr_t>(ptr);
+								return (intptr % alignof(float8_t)) == 0;
+							}
+					</script></code></pre>
+					</small>
+				</section>
+				<section>
+					<small>
+						<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|3|5-6|8-10|12-28|15,23,26|1-110000"><script type="text/template">
+							void shortcut_4(size_t N, const float *Af, float *S)
+							{
+								assert(N % 8 == 0); // Pad in the test
+								
+								assert(is_float8_aligned(Af));
+								const auto A = reinterpret_cast<const float8_t *>(Af);
+								
+								const auto Tf = transposed(N, Af);
+								assert(is_float8_aligned(Tf.data()));
+								const auto T = reinterpret_cast<const float8_t *>(Tf.data());
+								
+								parallelFor(N, [&](size_t i) {
+									for (size_t j = 0; j < N; ++j)
+									{
+										auto min = inf8;
+								
+										for (size_t k = 0; k < N / 8; ++k)
+										{
+											const auto x = A[i * N + k];
+											const auto y = T[j * N + k];
+											const auto z = x + y;
+								
+											min = min8(z, min);
+										}
+								
+										S[i * N + j] = hmin8(min);
+									}
+								});
+							}
+						</script></code></pre>
+					</small>
+				</section>
+				<section>
+					<small>
+						<div>Is it fast?</div>
+
+						<div class="r-stack">
+							<img src="images/v01234_plot.png" class="fragment img_40" data-fragment-index="1">
+							<img src="images/v01234_plot_hl.png" class="fragment img_40" data-fragment-index="3">
+						</div>
+						<div class="fragment" data-fragment-index="2">160 GFLOPS (1.8x speedup)</div>
+						<div class="fragment" data-fragment-index="4">2*4*2500^2 = 50MB</div>
+						<div class="fragment" data-fragment-index="5">2*4*4000^2 = 128MB</div>
+					</small>
+				</section>
+				<section>
+					<small>
+						<div>50MB vs 128MB</div>
+						<img src="images/cpu0_L3.png" class="fragment img_50">
 					</small>
 				</section>
 			</section>

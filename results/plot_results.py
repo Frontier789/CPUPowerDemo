@@ -34,7 +34,7 @@ for file in files:
         entries.append(PlotEntry(Ns, gflops, file.replace(".txt", "")))
 
 
-plot_until = 5
+plot_until = 6
 
 for e in entries[:plot_until]:
     plt.plot(e.Ns, e.gflops)
