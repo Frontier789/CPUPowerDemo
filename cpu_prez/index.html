@@ -649,10 +649,10 @@
 									{
 										auto min = inf8;
 								
-										for (size_t k = 0; k < N / 8; ++k)
+										for (size_t k = 0; k < N/8; ++k)
 										{
-											const auto x = A[i * N + k];
-											const auto y = T[j * N + k];
+											const auto x = A[i * N/8 + k];
+											const auto y = T[j * N/8 + k];
 											const auto z = x + y;
 								
 											min = min8(z, min);
@@ -726,6 +726,74 @@
 						</div>
 					</div>
 					<div class="fragment">1.5 update / read</div>
+				</section>
+				<section>
+					<small>
+						<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|3|5|7|12,13|17-20|22-25|28-34|1-110000"><script type="text/template">
+							void shortcut_5(size_t N, const float *Af, float *S)
+							{
+								constexpr size_t B = 3;
+
+								assert(N % 8 == 0 && N % B == 0); // Pad in the test
+								
+								... // transpose and check for alignment like before
+
+								parallelFor(N / B, [&](size_t io) {
+									for (size_t jo = 0; jo < N / B; ++jo)
+									{
+										float8_t mins[B*B];
+										std::fill_n(mins, B*B, inf8);
+								
+										for (size_t k = 0; k < N / 8; ++k)
+										{
+											float8_t Ai[B], Tj[B];
+
+											for (size_t ii = 0; ii < B; ++ii) Ai[ii] = A[(io*B + ii)*N/8 + k];
+											for (size_t ji = 0; ji < B; ++ji) Tj[ji] = T[(jo*B + ji)*N/8 + k];
+											
+											for (size_t ii = 0; ii < B; ++ii) {
+												for (size_t ji = 0; ji < B; ++ji) {
+													mins[ii*B + ji] = min8(mins[ii*B + ji], Ai[ii] + Tj[ji]);
+												}}
+										}
+
+										for (size_t ii = 0; ii < B; ++ii) {
+											for (size_t ji = 0; ji < B; ++ji) {
+												size_t i = io * B + ii;
+												size_t j = jo * B + ji;
+
+												S[i * N + j] = hmin8(mins[ii * B + ji]);
+											}}
+									}
+								});
+							}
+						</script></code></pre>
+					</small>
+				</section>
+				<section>
+					<small>
+						<div class="scale_rstack_50">
+							<img src="images/v012345_plot.png" class="fragment img_40">
+						</div>
+						<div>Is it fast?</div>
+						<div class="fragment">420 GFLOPS (2.5x speedup)</div>
+					</small>
+				</section>
+				<section>
+					<p>Why not 8 reads / 16 updates?</p>
+					<p class="fragment">AVX-256 only has 16 vector registers</p>
+					<p class="fragment">6 reading + 9 accumulating = 15</p>
+					<p class="fragment">8 reading + 16 accumulating = 25</p>
+					<p class="fragment">-> register spilling</p>
+					<small>
+						<p class="fragment">(AVX-512 has 32 vector registers)</p>
+					</small>
+				</section>
+			</section>
+			<section>
+				<h2>Conclusion</h2>
+				<section>
+					<p></p>
 				</section>
 			</section>
 		</div>

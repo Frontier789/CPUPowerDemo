@@ -16,7 +16,7 @@ class PlotEntry:
 
 entries = []
 
-N_limit = 10000
+N_limit = 100000
 
 for file in files:
     Ns = []
@@ -34,7 +34,7 @@ for file in files:
         entries.append(PlotEntry(Ns, gflops, file.replace(".txt", "")))
 
 
-plot_until = 6
+plot_until = 7
 
 for e in entries[:plot_until]:
     plt.plot(e.Ns, e.gflops)
