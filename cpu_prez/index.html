@@ -71,6 +71,16 @@
 			vertical-align: sub !important;
 		}
 
+		.scale_rstack_75 {
+			width: 75%;
+			transform: translate(18%, 0);
+		}
+
+		.scale_rstack_50 {
+			width: 50%;
+			transform: translate(50%, 0);
+		}
+
 		.scale_rstack_40 {
 			width: 40%;
 			transform: translate(75%, 0);
@@ -443,10 +453,14 @@
 					</small>
 				</section>
 				<section>
-					<img src="images/ilp3.svg" class="img_25 graph_img">
+					<div class="scale_rstack_40">
+						<img src="images/ilp3.svg" class="graph_img">
+					</div>
 				</section>
 				<section>
-					<img src="images/ilp4.svg" class="img_25 graph_img">
+					<div class="scale_rstack_40">
+						<img src="images/ilp4.svg" class="graph_img">
+					</div>
 				</section>
 				<section>
 					<small>
@@ -484,8 +498,8 @@
 				</section>
 				<section>
 					<small>
-						<div>Is it fast?</div>
 						<img src="images/v0123_plot.png" class="fragment img_40">
+						<div>Is it fast?</div>
 						<div class="fragment">90 GFLOPS (3x speedup)</div>
 					</small>
 				</section>
@@ -655,9 +669,9 @@
 					<small>
 						<div>Is it fast?</div>
 
-						<div class="r-stack">
-							<img src="images/v01234_plot.png" class="fragment img_40" data-fragment-index="1">
-							<img src="images/v01234_plot_hl.png" class="fragment img_40" data-fragment-index="3">
+						<div class="r-stack scale_rstack_75">
+							<img src="images/v01234_plot.png" class="fragment" data-fragment-index="1">
+							<img src="images/v01234_plot_hl.png" class="fragment" data-fragment-index="3">
 						</div>
 						<div class="fragment" data-fragment-index="2">160 GFLOPS (1.8x speedup)</div>
 						<div class="fragment" data-fragment-index="4">2*4*2500^2 = 50MB</div>
@@ -667,7 +681,9 @@
 				<section>
 					<small>
 						<div>50MB vs 128MB</div>
-						<img src="images/cpu0_L3.png" class="fragment img_50">
+						<div class="scale_rstack_50">
+							<img src="images/cpu0_L3.png" class="fragment">
+						</div>
 					</small>
 					<p class="fragment">:)</p>
 				</section>
@@ -675,10 +691,12 @@
 			<section>
 				<h2>Data use</h2>
 				<section>
-					<div class="r-stack">
-						<img src="images/u1.png" class="fragment img_25">
-						<img src="images/u2.png" class="fragment img_25">
-						<img src="images/u3.png" class="fragment img_25">
+					<div class="scale_rstack_30">
+						<div class="r-stack">
+							<img src="images/u1.png" class="fragment">
+							<img src="images/u2.png" class="fragment">
+							<img src="images/u3.png" class="fragment">
+						</div>
 					</div>
 				</section>
 			</section>
