@@ -40,19 +40,19 @@
 		}
 
 		.img_25 {
-			width: 25%;
+			height: 25%;
 		}
 
 		.img_40 {
-			width: 40%;
+			height: 40%;
 		}
 
 		.img_50 {
-			width: 50%;
+			height: 50%;
 		}
 
 		.img_75 {
-			width: 75%;
+			height: 75%;
 		}
 
 		.slides {
@@ -64,7 +64,21 @@
 		}
 
 		.reveal small {
-			width: 50%;
+			min-width: 50%;
+		}
+
+		.reveal small * sub {
+			vertical-align: sub !important;
+		}
+
+		.scale_rstack_40 {
+			width: 40%;
+			transform: translate(75%, 0);
+		}
+
+		.scale_rstack_30 {
+			width: 30%;
+			transform: translate(116%, 0);
 		}
 	</style>
 </head>
@@ -234,22 +248,25 @@
 					<p class="fragment">GFLOPS = 10<sup>9</sup> FLOPS</p>
 				</section>
 				<section>
-					<p>What can my lil' Ryzen 9 5950x do?</p>
-					<div class="r-stack">
-						<img src="images/cpu0.png" class="fragment img_25" data-fragment-index="1">
-						<img src="images/cpu1.png" class="fragment img_25" data-fragment-index="2">
-						<img src="images/cpu2.png" class="fragment img_25" data-fragment-index="4">
-						<img src="images/cpu3.png" class="fragment img_25" data-fragment-index="6">
-						<img src="images/simd_latency_on_zen3.png" class="fragment img_25" data-fragment-index="8">
-						<img src="images/simd_latency_on_zen3_hl.png" class="fragment img_25" data-fragment-index="9">
+					<div class="scale_rstack_40">
+						<div class="r-stack">
+							<img src="images/cpu0.png" class="fragment img_75" data-fragment-index="1">
+							<img src="images/cpu1.png" class="fragment img_75" data-fragment-index="2">
+							<img src="images/cpu2.png" class="fragment img_75" data-fragment-index="3">
+							<img src="images/cpu3.png" class="fragment img_75" data-fragment-index="4">
+							<img src="images/simd_latency_on_zen3.png" class="fragment img_75" data-fragment-index="5">
+							<img src="images/simd_latency_on_zen3_hl.png" class="fragment img_75"
+								data-fragment-index="6">
+						</div>
 					</div>
+					<p>What can my lil' Ryzen 9 5950x do?</p>
 
 					<div><small>
-							<span class="fragment" data-fragment-index="3">(16 cores)</span>
-							<span class="fragment" data-fragment-index="5">x (3.4GHz)</span>
-							<span class="fragment" data-fragment-index="7">x (8 FOPs)</span>
-							<span class="fragment" data-fragment-index="9">x (2 OPS)</span> <br>
-							<span class="fragment" data-fragment-index="10"> = 870 GFLOPS</span>
+							<span class="fragment" data-fragment-index="2">(16 cores)</span>
+							<span class="fragment" data-fragment-index="3">x (3.4GHz)</span>
+							<span class="fragment" data-fragment-index="4">x (8 FOPs)</span>
+							<span class="fragment" data-fragment-index="6">x (2 OPS)</span> <br>
+							<span class="fragment" data-fragment-index="7"> = 870 GFLOPS</span>
 						</small></div>
 				</section>
 				<section>
@@ -314,12 +331,14 @@
 			<section>
 				<h2>Access pattern</h2>
 				<section>
-					<div class="r-stack">
-						<img src="images/p0.png" class="fragment img_25">
-						<img src="images/p1.png" class="fragment img_25">
-						<img src="images/p2.png" class="fragment img_25">
-						<img src="images/p3.png" class="fragment img_25">
-						<img src="images/p4.png" class="fragment img_25">
+					<div class="scale_rstack_40">
+						<div class="r-stack">
+							<img src="images/p0.png" class="fragment img_75">
+							<img src="images/p1.png" class="fragment img_75">
+							<img src="images/p2.png" class="fragment img_75">
+							<img src="images/p3.png" class="fragment img_75">
+							<img src="images/p4.png" class="fragment img_75">
+						</div>
 					</div>
 				</section>
 				<section>
@@ -396,7 +415,9 @@
 						<span> N = 9500</span>
 						<span class="fragment"> -> 31 GFLOPS</span>
 					</div>
-					<img src="images/v012_plot.png" class="fragment img_25">
+					<div class="scale_rstack_30">
+						<img src="images/v012_plot.png" class="fragment img_25">
+					</div>
 				</section>
 			</section>
 			<section>
@@ -648,6 +669,17 @@
 						<div>50MB vs 128MB</div>
 						<img src="images/cpu0_L3.png" class="fragment img_50">
 					</small>
+					<p class="fragment">:)</p>
+				</section>
+			</section>
+			<section>
+				<h2>Data use</h2>
+				<section>
+					<div class="r-stack">
+						<img src="images/u1.png" class="fragment img_25">
+						<img src="images/u2.png" class="fragment img_25">
+						<img src="images/u3.png" class="fragment img_25">
+					</div>
 				</section>
 			</section>
 		</div>
