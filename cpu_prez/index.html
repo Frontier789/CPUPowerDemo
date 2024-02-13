@@ -207,6 +207,8 @@
 							<li class="fragment">Use all CPU resources</li>
 							<li class="fragment">No GPU</li>
 						</ul>
+						<br>
+						<small class="fragment">Sounds familiar? (hl)</small>
 					</div>
 				</section>
 				<section>
@@ -728,6 +730,16 @@
 					<div class="fragment">1.5 update / read</div>
 				</section>
 				<section>
+					<p>Why not 4+4 reads / 16 updates?</p>
+					<p class="fragment">AVX-256 only has 16 vector registers</p>
+					<p class="fragment">6 reading + 9 accumulating = 15</p>
+					<p class="fragment">8 reading + 16 accumulating = 25</p>
+					<p class="fragment">-> register spilling</p>
+					<small>
+						<p class="fragment">(AVX-512 has 32 vector registers)</p>
+					</small>
+				</section>
+				<section>
 					<small>
 						<pre><code data-trim data-noescape data-ln-start-from="1" data-line-numbers="1-110000|3|5|7|12,13|17-20|22-25|28-34|1-110000"><script type="text/template">
 							void shortcut_5(size_t N, const float *Af, float *S)
@@ -777,16 +789,6 @@
 						</div>
 						<div>Is it fast?</div>
 						<div class="fragment">420 GFLOPS (2.5x speedup)</div>
-					</small>
-				</section>
-				<section>
-					<p>Why not 8 reads / 16 updates?</p>
-					<p class="fragment">AVX-256 only has 16 vector registers</p>
-					<p class="fragment">6 reading + 9 accumulating = 15</p>
-					<p class="fragment">8 reading + 16 accumulating = 25</p>
-					<p class="fragment">-> register spilling</p>
-					<small>
-						<p class="fragment">(AVX-512 has 32 vector registers)</p>
 					</small>
 				</section>
 			</section>
